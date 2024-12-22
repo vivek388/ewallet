@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 class UserController(private val excelService: ExcelService) {
+
     @get:GetMapping("/users")
     val users: List<User>
         get() {
@@ -68,18 +69,9 @@ class UserController(private val excelService: ExcelService) {
     fun reload(@RequestParam("amount") amount: Double, request: HttpServletRequest): ModelAndView {
         logger.info("Processing reload request with amount: {}", amount)
 
-        var id: String = null.toString()
-        val cookies = request.cookies
-        if (cookies != null) {
-            for (cookie in cookies) {
-                if (ID_COOKIE_NAME == cookie.name) {
-                    id = cookie.value
-                    break
-                }
-            }
-        }
+        val id = request.cookies?.firstOrNull { it.name == ID_COOKIE_NAME }?.value
 
-        if (id == null) {
+        if (id.isNullOrBlank()) {
             logger.error("No valid user ID found in cookies. Reload failed.")
             val errorView = ModelAndView("redirect:/error")
             errorView.addObject("message", "User not authenticated.")
