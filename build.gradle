@@ -1,0 +1,62 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.18'
+    id 'io.spring.dependency-management' version '1.1.3'
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.0'
+    id 'org.jetbrains.kotlin.plugin.spring' version '2.1.0'
+}
+
+group = 'com.antgroup.ewallet'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'lib/alipayplus' // Path to the folder containing AAR and JAR files
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.springframework:spring-context:5.3.20'
+
+    // Add AlipayPlus SDK JAR dependencies
+    implementation fileTree(dir: 'lib/alipayplus', include: ['*.jar'])
+
+    // Add AlipayPlus SDK AAR dependencies
+    implementation(name: 'container-resource-1.0.0', ext: 'aar')
+    implementation(name: 'iaptinylog-1.0.0', ext: 'aar')
+    implementation(name: 'sdk-alipayplus', ext: 'aar')
+    implementation(name: 'sdk-autodebit', ext: 'aar')
+    implementation(name: 'sdk-mpm', ext: 'aar')
+
+    // Add additional dependencies
+    implementation 'org.apache.poi:poi:5.2.5'
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation 'com.alibaba:fastjson:1.2.83'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14' {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+
+    // Kotlin dependencies
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+
+    // Test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-parameters']
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
